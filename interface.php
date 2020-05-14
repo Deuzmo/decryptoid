@@ -62,11 +62,13 @@
    // Auxiliary function. Reads file, sanitizes full file and returns a string 
    // representation
    function getContents($conn, $uploadName){
-
-		$fileName = $_FILES[$uploadName]['tmp_name'];
-		$output = "";
-      $theFile = fopen($fileName, 'r') or die ("Failed to open file");
       
+      if ($_FILES[$uploadName]['type'] != "text/plain") die ("error, invalid file");
+
+      $fileName = $_FILES[$uploadName]['tmp_name'];
+      $output = "";
+
+      $theFile = fopen($fileName, 'r') or die ("Failed to open file");
       while (!feof($theFile)){
          $line = fgets($theFile);
 			$line = str_replace(array("\n", "\r", " "), '', $line);
@@ -75,9 +77,47 @@
 
       $output = $conn->real_escape_string($output);
 
-      if (strlen($output) == 0){
-         die ("ERROR file is empty");
-      }
+      if (strlen($output) == 0) die ("error, file is empty");
+      
 		return $output;
+   }
+   
+   // Implementation of simple substitution using ROT13, 
+   // $encrypt decides whether the input is being encrypted
+   // or decrypted.
+   function simpleSub($input, $encrypt){
+      $output = "";
+      $delta = $encrypt ? 13 : -13;
+
+      for ($i = 0; $i < strlen($input); $i++){
+         $upperCase = false;
+         $lowerCase = false;
+         $value = ord($input[$i]);
+
+         if ($value >= ord("A") && $value <= ord("Z")) $upperCase = TRUE;
+         else if ($value >= ord("a") && $value <= ord("z")) $lowerCase = TRUE;
+         
+         // Substract/Add 26 in case the value goes outside the bounds of the
+         // alphabet, resetting the rotation.
+         if ($value+$delta > ord("z") || 
+            ($upperCase && $value+$delta > ord("Z"))){
+
+            $value = $value + $delta - 26; 
+
+         }
+         else if ($value+$delta < ord("a") && $lowerCase || 
+                  $upperCase && $value+$delta < ord("A")){
+
+            $value = $value + $delta + 26;
+
+         }
+         else if ($upperCase || $lowerCase){
+            $value += $delta;
+         }
+
+         $output .= chr($value);
+      }
+
+      return $output;
    }
 ?>
