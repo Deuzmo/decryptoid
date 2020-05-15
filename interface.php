@@ -120,4 +120,106 @@
 
       return $output;
    }
+   
+   
+   // Transposition Cipher, pads with A's for uneven plain texts.
+   function transpose($plaintext, $key)
+   {
+       // Remove all non-letters and capitalize the letters.
+       $plaintext = strtoupper(preg_replace('/[^a-zA-Z]/', '', $plaintext));
+       $key = strtoupper(preg_replace('/[^a-zA-Z]/', '', $key));
+       
+       if($key == "")// If the key turned out to be empty, display message and return nothing
+       {
+           echo "You have entered an invalid key";
+           return;
+       }
+       
+       $keylen = strlen($key);
+       
+       while(strlen($plaintext) % $keylen != 0)
+       {
+           $plaintext .= "A"; // pad with A's if the length of the input cannot be divided with keylen evenly
+       }
+       $columnlen = strlen($plaintext) / strlen($key);
+       
+       
+       $alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+       $ciphertext = "";
+       
+       for($i = 0; $i < $keylen; $i++)
+       {
+           while($a < 26)
+           {
+               $letterPos = strpos($key, $alphabet[$a]);
+               $a++;
+               if($letterPos >= 0)
+               {
+                   break;
+               }
+           }
+           for($c = 0; $c < $columnlen; $c++)
+           {
+               $ciphertext .= $plaintext[$keylen * $c + $letterPos];
+           }
+       }
+       return $ciphertext;
+   }
+   
+   // Decryption for the Transposed ciphertext.
+   function detranspose($ciphertext, $key)
+   {
+       // Remove all non-letters and capitalize the letters.
+       $ciphertext = strtoupper(preg_replace('/[^a-zA-Z]/', '', $ciphertext));
+       $key = strtoupper(preg_replace('/[^a-zA-Z]/', '', $key));
+       
+       if($key == "")// If the key turned out to be empty, display message and return nothing
+       {
+           echo "You have entered an invalid key";
+           return;
+       }
+       
+       $keylen = strlen($key);
+       
+       if(strlen($input) % $keylen != 0)// If the key provided doesn't divide the cipher text correctly
+       {// This means that the key cannot decipher the ciphertext.
+           echo "Your key doesn't work for the cipher text...";
+           return;
+       }
+       $columnlen = strlen($ciphertext) / strlen($key);
+       
+       
+       $alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+       $plaintext = "";
+       
+       // Individual columns from the cipher text.
+       $columns = array($keylen);
+       
+       for($i = 0; $i < $keylen; $i++)
+       {
+           $columns[$i] = substr($ciphertext, $columnlen * $i, $columnlen);
+       }
+       // Rearranged will hold the proper order of the columns before decrypting.
+       $rearranged = array($keylen);
+       $c = 0;
+       $a = 0;
+       while($c < $keylen)// We will only loop through the cipher based on key lenght
+       {
+           $letterPos = strpos($key, $alphabet[$a]);// Position of a letter in the key.
+           $a++;// Keep moving through the alphabet.
+           if($letterPos >= 0)// We rearrange the columns based on the key
+           {// If the current letter pointed in the alphabet is in the key, there should be a letter position.
+               $rearranged[$letterPos] = $columns[$c];
+               $c++; // Only move the loop when a column is successfully put in the right spot.
+           }
+       }
+       for($l = 0; $l < $columnlen; $l++)
+       {
+           for($c = 0; $c < $keylen; $c++)// Cycle through the columns
+           {	//Get the $cth letter from the current column and add it to the plaintext.
+               $plaintext .= $rearranged[$c][$l];
+           }
+       }
+       return $plaintext;
+   }
 ?>
