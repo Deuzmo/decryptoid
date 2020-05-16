@@ -3,17 +3,15 @@
    // Contains safe functions to query the database
    // and general interface functions
    //
-   // THE VARIABLE $userTable INDICATES THE TABLE WHERE INPUT IS STORED!
+   // THE VARIABLE $userTable/$inputHist indicate where input is stored
    //
-   //
+
    require_once 'login.php';
    $userTable = "Users";
    $inputHist = "InputHistory";
 
    $conn = new mysqli($hn, $un, $pw, $db);
    if ($conn->connect_error) die("Oops something went wrong!");
-   $conn->query("USE $db"); 
-
 
    // Clears strings from special characters from the login input
    function sanitizeLogin($conn, $var)
@@ -93,5 +91,4 @@
 		setcookie(session_name(), '', time() - 2592000, '/');
 		session_destroy();
 	}
-
 ?>
