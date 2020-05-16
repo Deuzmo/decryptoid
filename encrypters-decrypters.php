@@ -64,15 +64,15 @@
        
        $alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
        $ciphertext = "";
-       
+       $a = 0; // Yup I forgot to initialize $a to 0.
        for($i = 0; $i < $keylen; $i++)
        {    // $a was never set previously according to the debugger?
            while($a < 26)
            {
                $letterPos = strpos($key, $alphabet[$a]);
                $a++;
-               if($letterPos >= 0)
-               {
+               if($letterPos !== FALSE) // Changed this to check for FALSE instead to be safe.
+               { // If strpos didn't give letterPos a letter this break shouldn't run.
                    break;
                }
            }
