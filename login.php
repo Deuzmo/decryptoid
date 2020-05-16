@@ -1,8 +1,4 @@
-<?php 	// login.php
-			// For debugging/TA Grader's purposes:
-			// Password for the "admin" user was 'thisIsPassword' 
-			// (not to be confused with the database user account)
-			// Salt was 'axn123bn,-'
+<?php // Database access details
 	
 	$hn = 'localhost';
 	$un = 'daniel';
