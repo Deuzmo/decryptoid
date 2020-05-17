@@ -7,11 +7,12 @@
    //
 
    require_once 'login.php';
-   $userTable = "Users";
-   $inputHist = "InputHistory";
+   $userTable = "users";
+   $inputHist = "input_history";
 
    $conn = new mysqli($hn, $un, $pw, $db);
    if ($conn->connect_error) die("Oops something went wrong!");
+
 
    // Clears strings from special characters from the login input
    function sanitizeLogin($conn, $var)
@@ -26,16 +27,26 @@
 		return $conn->real_escape_string($_POST[$var]);
    }
    
+   //Verifies that account creation was attempted
+   function attemptedCreation(){
+      return (isset($_POST['username']) && 
+               isset($_POST['email']) &&
+               isset($_POST['pw']) &&
+               isset($_POST['pwVerify'])
+            );
+   }
    
-   // Uses prepare statement for insertions
+   // Uses prepare statement for insertions, returns true or false depending
+   // on success.
    function insertUser($conn, $table, $user, $email, $password)
    {
-      $safeQuery = $conn->prepare("INSERT INTO $table VALUES(?,?,?,?)");
+      $safeQuery = $conn->prepare("INSERT INTO $table VALUES(?,?,?)");
       $hash = password_hash($password, PASSWORD_DEFAULT); 
       $safeQuery->bind_param("sss", $user, $email, $hash);
       $safeQuery->execute();
-      if ($safeQuery->error != "") die("Oops, something went wrong!");
+      if ($safeQuery->error != "") return FALSE;
       $safeQuery->close(); 
+      return TRUE;
    }
 
 
@@ -54,13 +65,26 @@
    }
 
 
-   // IN PROGRESS - Verifies that format for user/email creation
-   function verifyFormat($user, $pw){
-
-   $validUser = preg_match("/ /", $user);
-   $validPw = preg_match("/ /", $pw);
+   function uniqueUser($conn, $table, $user){
+      $exists = $conn->query("SELECT username from $table WHERE username = '$user'");
+      
+      if (($exists->num_rows) > 0) return FALSE;
+      else return TRUE;
+   }
    
-   return ($validUser && $validPw);
+
+   // Verifies the format for a valid username.
+   function validUser($user){
+      $invalid = preg_match("/[^\w_-]/", $user);
+      return !$invalid;
+   }
+
+   // Verifies the email formatting at user creation time.
+   function validEmail($email){
+      if (filter_var($email, FILTER_VALIDATE_EMAIL) != FALSE)
+         return TRUE;
+      else 
+         return FALSE;
    }
 
    // Auxiliary function. Reads file, sanitizes full file and returns a string 
@@ -86,9 +110,9 @@
 		return $output;
    }
 
+   // Destroys the session
    function destroy_session_and_data() {
 		$_SESSION = array();
 		setcookie(session_name(), '', time() - 2592000, '/');
 		session_destroy();
 	}
-?>

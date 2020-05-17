@@ -64,7 +64,7 @@
        
        $alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
        $ciphertext = "";
-       $a = 0; // Yup I forgot to initialize $a to 0.
+       $a = 0;
        for($i = 0; $i < $keylen; $i++)
        {    // $a was never set previously according to the debugger?
            while($a < 26)
@@ -100,9 +100,6 @@
        
        $keylen = strlen($key);
        
-       //*********************** 
-       // $ciphertext was previously input, was this an error?
-       //***********************
        if(strlen($ciphertext) % $keylen != 0)// If the key provided doesn't divide the cipher text correctly
        {// This means that the key cannot decipher the ciphertext.
            echo "Your key doesn't work for the cipher text...";
