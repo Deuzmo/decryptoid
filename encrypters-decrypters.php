@@ -113,7 +113,7 @@
        {
            $letterPos = strpos($key, $alphabet[$a]);// Position of a letter in the key.
            $a++;// Keep moving through the alphabet.
-           if($letterPos >= 0)// We rearrange the columns based on the key
+           if($letterPos !== FALSE)// We rearrange the columns based on the key
            {// If the current letter pointed in the alphabet is in the key, there should be a letter position.
                $rearranged[$letterPos] = $columns[$c];
                $c++; // Only move the loop when a column is successfully put in the right spot.
