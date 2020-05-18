@@ -49,6 +49,16 @@
       return TRUE;
    }
 
+   function insertInfo($conn, $table, $user, $input, $cypher)
+   {
+      $safeQuery = $conn->prepare("INSERT INTO $table (username, input, cypher) VALUES(?,?,?)");
+      $safeQuery->bind_param("sss", $user, $input, $cypher);
+      $safeQuery->execute();
+      if ($safeQuery->error != "") return FALSE;
+      $safeQuery->close(); 
+      return TRUE;
+   }
+
 
    // Verifies a login attempt
    function login($conn, $table, $user, $pw)
@@ -91,7 +101,7 @@
    // representation
    function getContents($conn, $uploadName){
       
-      if ($_FILES[$uploadName]['type'] != "text/plain") die ("error, invalid file");
+      if ($_FILES[$uploadName]['type'] != 'text/plain') die ("Invalid file type");
 
       $fileName = $_FILES[$uploadName]['tmp_name'];
       $output = "";
@@ -99,7 +109,7 @@
       $theFile = fopen($fileName, 'r') or die ("Failed to open file");
       while (!feof($theFile)){
          $line = fgets($theFile);
-			$line = str_replace(array("\n", "\r", " "), '', $line);
+			$line = str_replace(array("\n", "\r",), '', $line);
 			$output .= $line;
       }
 

@@ -29,6 +29,7 @@
       }
       if ($errors == 0){
          $success = insertUser($conn,$userTable,$username,$email,$tmpPw);
+         
          if ($success){
             echo "<h4 style = 'color:green'>Account created succesfully!, <a href=authenticate.php>click here</a> to log in.";
             echo "<br> Or, <a href=guestLanding.php>click here</a> to go back to the homepage.</h4>";
@@ -66,5 +67,6 @@
          </form>
       </div>
 _END;
+      $conn->close();
    }
 ?>

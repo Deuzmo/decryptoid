@@ -47,12 +47,6 @@
        $plaintext = strtoupper(preg_replace('/[^a-zA-Z]/', '', $plaintext));
        $key = strtoupper(preg_replace('/[^a-zA-Z]/', '', $key));
        
-       if($key == "")// If the key turned out to be empty, display message and return nothing
-       {
-           echo "You have entered an invalid key";
-           return;
-       }
-       
        $keylen = strlen($key);
        
        while(strlen($plaintext) % $keylen != 0)
@@ -66,7 +60,7 @@
        $ciphertext = "";
        $a = 0;
        for($i = 0; $i < $keylen; $i++)
-       {    // $a was never set previously according to the debugger?
+       {  
            while($a < 26)
            {
                $letterPos = strpos($key, $alphabet[$a]);
@@ -92,18 +86,11 @@
        $ciphertext = strtoupper(preg_replace('/[^a-zA-Z]/', '', $ciphertext));
        $key = strtoupper(preg_replace('/[^a-zA-Z]/', '', $key));
        
-       if($key == "")// If the key turned out to be empty, display message and return nothing
-       {
-           echo "You have entered an invalid key";
-           return;
-       }
-       
        $keylen = strlen($key);
        
        if(strlen($ciphertext) % $keylen != 0)// If the key provided doesn't divide the cipher text correctly
        {// This means that the key cannot decipher the ciphertext.
-           echo "Your key doesn't work for the cipher text...";
-           return;
+        return "Your key doesn't work for the cipher text...";
        }
        $columnlen = strlen($ciphertext) / strlen($key);
        
@@ -155,7 +142,6 @@
        
        $keylen = strlen($key);
        $textlen = strlen($text);
-       echo "<br> $textlen <br>";
        $k = array(256); // Array to contain the repeated key.
        // Initialize $k with the key, repeating until full.
        for($i = 0; $i < 256; $i++)

@@ -1,11 +1,11 @@
 <?php 	// userLanding.php
 	require_once 'interface.php';
+	require_once 'encrypters-decrypters.php';
 	session_start();
 
 	
-	if (	isset($_SESSION['username']) && 
-			$_SESSION['check'] == hash('ripemd128', $_SERVER['REMOTE_ADDR'] .
-				$_SERVER['HTTP_USER_AGENT']))
+	if (	isset($_SESSION['username']) && $_SESSION['check'] == 
+			hash('ripemd128', $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']))
 	{
 		$username = $_SESSION['username'];
 
@@ -29,16 +29,16 @@
 				</select>
 				<br>
 				<div style = "display: inline-block; margin-top: 30px; font-style: italic;">Key:
-					<input type="text" name="Key"><br>
+					<input type="text" name="key"><br>
 				</div>
 				<div style = "margin-top: 30px; font-style:italic">Text file:
-					<input style = "margin-bottom: 30px;" type='file' name='uploadedFile' accept=".txt">
+					<input style = "margin-bottom: 30px;" type="file" name="uploadedFile">
 				</div>
 				
 				<input type="radio" id="encryption" name="process" value="encrypt" checked>
 				<label for="encryption">Encrypt</label><br>
 				
-				<input type="radio" id="Decrypt" name="process" value="decrypt">
+				<input type="radio" id="decryption" name="process" value="decrypt">
 				<label for="decryption">Decrypt</label><br>
 				
 				<input style= "display: block; margin: 0 auto;" type="submit" value="Process File">
@@ -48,27 +48,70 @@
 
 _END;
 
-		if (isset($_POST['key']) && isset($_POST['method']) && file_exists($_FILES['uploadedFile']['tmp_name'])){
+		if (isset($_POST['method']) && file_exists($_FILES['uploadedFile']['tmp_name'])){
 			echo "<div style = \"border-style:ridge; width:40%; padding:20px; margin: 0 auto\">";
-			$key = getPOST($conn, 'key');
-			$method = getPost($conn, 'method');
-			$filename = $_FILES['uploadedFile']['tmp_name'];
+
+			$key = isset($_POST['key']) ? getPOST($conn, 'key') : "";
+			$method = getPOST($conn, 'method');
+			$process = getPOST($conn, 'process');
+			$text = getContents($conn, 'uploadedFile');
+			$output = "";
 
 			// If key field was left empty
-			if ($key == ""){
-				echo "<h4 style = 'color:orange'>Warning: Empty Key works only for substitution!</h4>";
+			if ($key == "" && $method != "substitution"){
+				$output = "<h4 style = 'color:orange'>Warning: Empty Key works only for substitution!</h4>";
 			}
+			else{
+				// Keeps track of the user inputs, provided it's not invalid
+				// (e.g empty key with rc4 algorithm would make no sense)
+				insertInfo($conn, $inputHist, $username, $text, $method);
+			}
+	
+			if ($method == "substitution"){
+				
+				if ($process == "encrypt"){
+					$output = simpleSub($text, TRUE);
+				}
+				else{
+					$output = simpleSub($text, FALSE);
+				}
 
-			$text = getContents($conn, $filename);
+			}
+			else if ($method == "doubleTrans" && $key != ""){
 
-			/************************************************************************************* */
-			// Text is the text to cypher/decypher, proceed from here to show the output
-			/************************************************************************************ */
-		echo "</div>"; // Closes style div
+				if ($process == "encrypt"){
+					$output = transpose($text, $key);
+				}
+				else{
+					$output = detranspose($text, $key);
+				}
+
+			}
+			else if ($method == "rc4" && $key != ""){
+
+				$output = rivest($text, $key);
+
+			}
+			else if ($method == "des" && $key != ""){
+
+				if ($process == "encrypt"){
+					$output = des($text, $key);
+				}
+				else{
+					$output = "Feature not working yet!";
+				}
+
+			}
+			$conn->close();
+			echo "<h3 style = 'color:blue;'>The resulting output is:</h3>" .
+				"$output";
+
+			echo "</div>"; // Closes style div
 		}
 	}
 
 	else {
+		$conn->close();
 		die("Restricted section. <b><a href=guestLanding.php>Please click here</a></b>" . 
 		" to log in or create a new account.");
 	}

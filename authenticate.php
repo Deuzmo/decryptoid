@@ -17,8 +17,8 @@
                                                 $_SERVER['HTTP_USER_AGENT']);
          $_SESSION['username'] = $tmpUser;
 
-         echo "<h4> Hello $tmpUser! Welcome back." .
-              "<a href=userLanding.php> Click here to continue</a></h4>";
+         echo "<h4> Hello $tmpUser! Welcome back. " .
+              "<a href=userLanding.php>Click here to continue</a></h4>";
 
          $_SESSION['check'] = hash('ripemd128', $_SERVER['REMOTE_ADDR'] .
                               $_SERVER['HTTP_USER_AGENT']);
@@ -27,7 +27,7 @@
 
       }
       else{ 
-
+         $conn->close();
          echo "<h4> Invalid combination. <a href=guestLanding.php>Please click here</a>" . 
          " to log in or create a new account.</h4>";
 
@@ -38,6 +38,7 @@
 
       header('WWW-Authenticate: Basic realm="Restricted Section"');
       header('HTTP/1.0 401 Unauthorized');
+      $conn->close();
       die ("Restricted section. <b><a href=guestLanding.php>Please click here</a></b>" . 
       " to log in or create a new account.");
 
