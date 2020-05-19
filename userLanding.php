@@ -90,10 +90,10 @@ _END;
 			else if ($method == "rc4" && $key != ""){
 				if($process == "encrypt"){
 					
-					$output = rivest($text, $key, 1);
+					$output = rivest($text, $key, TRUE);
 				}
 				else{
-					$output = rivest($text, $key, 0);
+					$output = rivest($text, $key, FALSE);
 				}
 
 			}
@@ -103,13 +103,19 @@ _END;
 					$output = des($text, $key);
 				}
 				else{
-					$output = "Feature not working yet!";
+					$output = desd($text, $key);
 				}
 
 			}
 			$conn->close();
-			echo "<h3 style = 'color:blue;'>The resulting output is:</h3>" .
-				"$output";
+
+			echo "<h3 style = 'color:blue;'>The resulting output is:</h3>";
+			while (strlen($output > 75)){
+				$line = substr($output, 0, 75);
+				$output = substr($output, 75);
+				echo "$line<br>";
+			}
+			echo $output;
 
 			echo "</div>"; // Closes style div
 		}

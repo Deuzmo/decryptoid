@@ -43,7 +43,7 @@
    function transpose($plaintext, $tmpKey)
 {
 	// Remove all non-letters and capitalize the letters.
-	$plaintext = strtoupper(preg_replace('/[^a-zA-Z ]/', '', $plaintext));
+	$plaintext = strtoupper(preg_replace('/[^a-zA-Z]/', '', $plaintext));
     $tmpKey = strtoupper(preg_replace('/[^a-zA-Z]/', '', $tmpKey));
     $keySet = array("A"=>FALSE,"B"=>FALSE,"C"=>FALSE,
                     "D"=>FALSE,"E"=>FALSE,"F"=>FALSE,
@@ -69,7 +69,7 @@
 
 	while(strlen($plaintext) % $keylen != 0)
 	{
-		$plaintext .= " "; // pad with Q's if the length of the input cannot be divided with keylen evenly
+		$plaintext .= "_"; // pad with underscore if the length of the input cannot be divided with keylen evenly
 	}
 	$columnlen = strlen($plaintext) / strlen($key);
 
@@ -120,7 +120,7 @@
 function detranspose($ciphertext, $tmpKey)
 {
 	// Remove all non-letters and capitalize the letters.
-	$ciphertext = strtoupper(preg_replace('/[^a-zA-Z ]/', '', $ciphertext));
+	$ciphertext = strtoupper(preg_replace('/[^a-zA-Z_]/', '', $ciphertext));
 	$tmpKey = strtoupper(preg_replace('/[^a-zA-Z]/', '', $tmpKey));
     $keySet = array("A"=>FALSE,"B"=>FALSE,"C"=>FALSE,
                     "D"=>FALSE,"E"=>FALSE,"F"=>FALSE,
@@ -146,8 +146,7 @@ function detranspose($ciphertext, $tmpKey)
 
 	if(strlen($ciphertext) % $keylen != 0)// If the key provided doesn't divide the cipher text correctly
 	{// This means that the key cannot decipher the ciphertext.
-		echo "Your key doesn't work for the cipher text...";
-		return;
+        return "Your key doesn't work for the cipher text...";
 	}
 	$columnlen = strlen($ciphertext) / strlen($key);
 
@@ -185,7 +184,7 @@ function detranspose($ciphertext, $tmpKey)
 		}
 	}
 
-	// Transpose one more timeu
+	// Transpose one more time
 	unset($columns);
 	$columns = array();
 
@@ -270,7 +269,7 @@ function detranspose($ciphertext, $tmpKey)
 		}
 
 		$ciphered = "";
-		if($encrypt != 1)
+		if(!$encrypt)
 		{// decryption
 			$textArray = array();
 			$t = 0;	
@@ -306,6 +305,8 @@ function detranspose($ciphertext, $tmpKey)
        $y = $temp;
    }
    
+
+
    // DES
    function des($plaintext, $key)
    {// key has to be 64 bits or 8 bytes
@@ -518,6 +519,8 @@ function detranspose($ciphertext, $tmpKey)
    
    // Decryption, the keys are fed in reverse.
    
+
+
    function desd($plaintext, $key)
    {// key has to be 64 bits or 8 bytes
        
