@@ -206,13 +206,11 @@ function detranspose($ciphertext, $key)
 
 		$keylen = strlen($key);
 		$textlen = strlen($text);
-		//echo "<br> $textlen <br>";
 		$k = array(256); // Array to contain the repeated key.
 		// Initialize $k with the key, repeating until full.
 		for($i = 0; $i < 256; $i++)
 		{
 			$k[$i] = ord($key[$i % $keylen]); // Cycle through the key, storing each byte into $k
-			//echo $k[$i]. "<br>";
 		}
 
 		// This is the Key Scheduling Algorithm (KSA)
@@ -256,7 +254,6 @@ function detranspose($ciphertext, $key)
 				$char = substr($text, $i, 3);
 				$textArray[$t] = intval($char);
 				$t++;
-				echo $textArray[$i] . "-";
 			}
 			for($i = 0; $i < $textlen/3; $i++)
 			{
