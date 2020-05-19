@@ -40,18 +40,30 @@
    }
    
    
-   function transpose($plaintext, $key)
+   function transpose($plaintext, $tmpKey)
 {
 	// Remove all non-letters and capitalize the letters.
 	$plaintext = strtoupper(preg_replace('/[^a-zA-Z]/', '', $plaintext));
-	$key = strtoupper(preg_replace('/[^a-zA-Z]/', '', $key));
+    $tmpKey = strtoupper(preg_replace('/[^a-zA-Z]/', '', $tmpKey));
+    $keySet = array("A"=>FALSE,"B"=>FALSE,"C"=>FALSE,
+                    "D"=>FALSE,"E"=>FALSE,"F"=>FALSE,
+                    "G"=>FALSE,"H"=>FALSE,"I"=>FALSE,
+                    "J"=>FALSE,"K"=>FALSE,"L"=>FALSE,
+                    "M"=>FALSE,"N"=>FALSE,"O"=>FALSE,
+                    "P"=>FALSE,"Q"=>FALSE,"R"=>FALSE,
+                    "S"=>FALSE,"T"=>FALSE,"U"=>FALSE,
+                    "V"=>FALSE,"W"=>FALSE,"X"=>FALSE,
+                    "Y"=>FALSE,"Z"=>FALSE);
+    $key = "";
 
-	
-	if($key == "")// If the key turned out to be empty, display message and return nothing
-	{
-		echo "You have entered an invalid key";
-		return;
-	}
+    // Loop through the keySet "used" characters to create a
+    // Key without repetitions.
+	for ($i = 0; $i < strlen($tmpKey); $i++){
+        if ($keySet[$tmpKey[$i]] == FALSE){
+            $key .= $tmpKey[$i];
+            $keySet[$tmpKey[$i]] = TRUE;
+        }
+    }
 
 	$keylen = strlen($key);
 
@@ -105,17 +117,30 @@
 	return $ciphertext;
 }
 
-function detranspose($ciphertext, $key)
+function detranspose($ciphertext, $tmpKey)
 {
 	// Remove all non-letters and capitalize the letters.
 	$ciphertext = strtoupper(preg_replace('/[^a-zA-Z]/', '', $ciphertext));
-	$key = strtoupper(preg_replace('/[^a-zA-Z]/', '', $key));
-	
-	if($key == "")// If the key turned out to be empty, display message and return nothing
-	{
-		echo "You have entered an invalid key";
-		return;
-	}
+	$tmpKey = strtoupper(preg_replace('/[^a-zA-Z]/', '', $tmpKey));
+    $keySet = array("A"=>FALSE,"B"=>FALSE,"C"=>FALSE,
+                    "D"=>FALSE,"E"=>FALSE,"F"=>FALSE,
+                    "G"=>FALSE,"H"=>FALSE,"I"=>FALSE,
+                    "J"=>FALSE,"K"=>FALSE,"L"=>FALSE,
+                    "M"=>FALSE,"N"=>FALSE,"O"=>FALSE,
+                    "P"=>FALSE,"Q"=>FALSE,"R"=>FALSE,
+                    "S"=>FALSE,"T"=>FALSE,"U"=>FALSE,
+                    "V"=>FALSE,"W"=>FALSE,"X"=>FALSE,
+                    "Y"=>FALSE,"Z"=>FALSE);
+    $key = "";
+
+    // Loop through the keySet "used" characters to create a
+    // Key without repetitions.
+    for ($i = 0; $i < strlen($tmpKey); $i++){
+        if ($keySet[$tmpKey[$i]] == FALSE){
+            $key .= $tmpKey[$i];
+            $keySet[$tmpKey[$i]] = TRUE;
+        }
+    }
 
 	$keylen = strlen($key);
 
