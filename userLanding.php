@@ -88,8 +88,13 @@ _END;
 
 			}
 			else if ($method == "rc4" && $key != ""){
-
-				$output = rivest($text, $key);
+				if($process == "encrypt"){
+					
+					$output = rivest($text, $key, 1);
+				}
+				else{
+					$output = rivest($text, $key, 0);
+				}
 
 			}
 			else if ($method == "des" && $key != ""){
