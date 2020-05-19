@@ -227,7 +227,7 @@ function detranspose($ciphertext, $key)
 			
 		$j = 0; // Set j back to 0 for the Pseudo Random Generation Algorithm
 		$keystream = array($textlen);
-		for($i = 1; $i < 256; $i++) // This loop discards the first 256 bytes generated.
+		for($i = 0; $i < 256; $i++) // This loop discards the first 256 bytes generated.
 		{			// but it is usually safer to discard as many bytes as possible
 			// as long as the decryption does the same, which in this case, it does.
 			// The discarding prevents attacks from related characters. The ciphertext also seem
@@ -236,7 +236,7 @@ function detranspose($ciphertext, $key)
 			swap($s[$i], $s[$j]);
 		}
 		$j = 0;
-		for($i = 1; $i < $textlen; $i++)
+		for($i = 0; $i < $textlen; $i++)
 		{
 			$j = $j + $s[$i] % 256;
 			swap($s[$i], $s[$j]);
