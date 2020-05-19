@@ -43,7 +43,7 @@
    function transpose($plaintext, $tmpKey)
 {
 	// Remove all non-letters and capitalize the letters.
-	$plaintext = strtoupper(preg_replace('/[^a-zA-Z ]/', '', $plaintext));
+	$plaintext = strtoupper(preg_replace('/[^a-zA-Z]/', '', $plaintext));
     $tmpKey = strtoupper(preg_replace('/[^a-zA-Z]/', '', $tmpKey));
     $keySet = array("A"=>FALSE,"B"=>FALSE,"C"=>FALSE,
                     "D"=>FALSE,"E"=>FALSE,"F"=>FALSE,
@@ -69,7 +69,7 @@
 
 	while(strlen($plaintext) % $keylen != 0)
 	{
-		$plaintext .= " "; // pad with Q's if the length of the input cannot be divided with keylen evenly
+		$plaintext .= "_"; // pad with Q's if the length of the input cannot be divided with keylen evenly
 	}
 	$columnlen = strlen($plaintext) / strlen($key);
 
@@ -120,7 +120,7 @@
 function detranspose($ciphertext, $tmpKey)
 {
 	// Remove all non-letters and capitalize the letters.
-	$ciphertext = strtoupper(preg_replace('/[^a-zA-Z ]/', '', $ciphertext));
+	$ciphertext = strtoupper(preg_replace('/[^a-zA-Z_]/', '', $ciphertext));
 	$tmpKey = strtoupper(preg_replace('/[^a-zA-Z]/', '', $tmpKey));
     $keySet = array("A"=>FALSE,"B"=>FALSE,"C"=>FALSE,
                     "D"=>FALSE,"E"=>FALSE,"F"=>FALSE,
